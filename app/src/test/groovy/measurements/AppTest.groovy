@@ -6,9 +6,24 @@ package measurements
 import spock.lang.Specification
 import com.google.common.math.DoubleMath;
 
+/*
+Improvement Ideas:
+1) Expand test cases
+    - Especially around edge cases (negative values, null values, etc)
+    - i.e. Negative weights
+    - i.e. Negative values, but positive weights
+2) Check for thrown exceptions if desired
+3) Agree on test naming scheme
+4) Mock out stdin to verify input preprocessing works correctly.
+5) Unify epsilon definition in test utils file
+6) Paramaterize core calculation logic tests
+7) Load larger test files for testing
+8) Switch to Java core based testing framework instead of Spock/Groovy
+ */
+
 class AppTest extends Specification {
     // For comparing doubles.
-    def epsilon = 0.00000001;
+    final double epsilon = 0.00000001;
     def "It can calculate the weighted average for unnamed measurements"() {
         setup:
         ArrayList<Measurement> measurements = new ArrayList<Measurement>();
@@ -39,5 +54,33 @@ class AppTest extends Specification {
         DoubleMath.fuzzyEquals(result.get("category1"), 1, epsilon)
         DoubleMath.fuzzyEquals(result.get("category2"), 2, epsilon)
         DoubleMath.fuzzyEquals(result.get("category3"), 3, epsilon)
+    }
+
+    def "it returns 0 on empty list or null input"() {
+        when:
+        ArrayList<Measurement> measurements = new ArrayList<Measurement>();
+
+        then:
+        DoubleMath.fuzzyEquals(App.calculateWeightedAverage(measurements), 0.0, epsilon)
+
+        when:
+        measurements = null
+
+        then:
+        DoubleMath.fuzzyEquals(App.calculateWeightedAverage(measurements), 0.0, epsilon)
+    }
+
+    def "it returns empty hashmap on empty list categorically"() {
+        when:
+        ArrayList<Measurement> measurements = new ArrayList<Measurement>();
+
+        then:
+        App.calculateGroupWeightedAverage(measurements).size() == 0
+
+        when:
+        measurements = null
+
+        then:
+        App.calculateGroupWeightedAverage(measurements).size() == 0
     }
 }

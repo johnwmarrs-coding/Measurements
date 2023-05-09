@@ -3,9 +3,20 @@
  */
 package measurements
 
+import com.google.common.math.DoubleMath
 import spock.lang.Specification
 
+/*
+Improvement Ideas:
+1) Expand test cases
+    - Especially around edge cases (negative values, null values, etc)
+2) Check for thrown exceptions if desired
+3) Agree on naming scheme
+ */
+
 class MeasurementTest extends Specification {
+    // For comparing doubles.
+    final double epsilon = 0.00000001;
     def "It can set and get the name"() {
         setup:
         Measurement m = new Measurement();
@@ -22,10 +33,10 @@ class MeasurementTest extends Specification {
         Measurement m = new Measurement();
 
         when:
-        m.setName("name");
+        m.setValue(5);
 
         then:
-        m.getName() == "name";
+        DoubleMath.fuzzyEquals(m.getValue(),5, epsilon)
     }
 
     def "It can set and get the weight"() {
@@ -33,17 +44,34 @@ class MeasurementTest extends Specification {
         Measurement m = new Measurement();
 
         when:
-        m.setName("name");
+        m.setWeight(0.4);
 
         then:
-        m.getName() == "name";
+        DoubleMath.fuzzyEquals(m.getWeight(),0.4, epsilon)
     }
 
     def "It can accept just a value and weight"() {
-
+        when:
+        double value = 12.43
+        double weight = 4.2
+        Measurement m = new Measurement(value, weight);
+        then:
+        DoubleMath.fuzzyEquals(m.getValue(), value, epsilon)
+        DoubleMath.fuzzyEquals(m.getWeight(), weight, epsilon)
+        // Ensure default name is None
+        m.getName() == "None"
     }
 
     def "It can accept a name, value, and weight in constructor"() {
-        
+        when:
+        double value = 12.43
+        double weight = 4.2
+        String name = "TestName"
+        Measurement m = new Measurement(name, value, weight);
+        then:
+        DoubleMath.fuzzyEquals(m.getValue(), value, epsilon)
+        DoubleMath.fuzzyEquals(m.getWeight(), weight, epsilon)
+        // Ensure default name is None
+        m.getName() == name
     }
 }
