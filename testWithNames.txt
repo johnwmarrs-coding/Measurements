@@ -1,0 +1,12 @@
+1
+10
+temperature 87.1 0.3
+temperature 90.1 0.6
+temperature 93.1 0.5
+temperature 94.59 0.8
+temperature 83.12 0.3
+humidity 30.1 0.2
+humidity 32.1 0.1
+humidity 39.2 0.5
+humidity 28.1 0.9
+humidity 23.1 0.3
